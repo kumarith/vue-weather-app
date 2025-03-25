@@ -23,8 +23,29 @@
   </div>
 </template>
 
-<script setup>
-//import {Routerview} from 'vue-router'
+<script >
+import axios from 'axios';
+export default {
+  data() {
+    return {
+      city: '',
+      weather: null,
+    };
+  },
+  methods: {
+    async fetchWeather() {
+      if (!this.city) return;
+      const apiKey = 'API_KEY'; 
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=${apiKey}`;
+      try {
+        const response = await axios.get(url);
+        this.weather = response.data;
+      } catch (error) {
+        alert('City not found!');
+      }
+    },
+  },
+};
 
 </script>
 
