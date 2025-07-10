@@ -15,9 +15,9 @@
         Get Weather
       </button>
       <div v-if="weather" class="mt-4 text-center">
-        <h2 class="text-2xl font-semibold">{{ weather.name }}, {{ weather.sys.country }}</h2>
-        <p class="text-xl">{{ weather.weather[0].description }}</p>
-        <p class="text-4xl font-bold">{{ Math.round(weather.main.temp) }}°C</p>
+        <h2 class="text-2xl font-semibold">{{ weather.location.name }}, {{ weather.location.country }}</h2>
+        <p class="text-xl">{{ weather.current.condition.text }}</p>
+        <p class="text-4xl font-bold">{{ Math.round(weather.current.temp_c) }}°C</p>
       </div>
     </div>
   </div>
@@ -32,16 +32,25 @@ export default {
       weather: null,
     };
   },
+
+
+
   methods: {
     async fetchWeather() {
       if (!this.city) return;
-      const apiKey = 'API_KEY'; 
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=${apiKey}`;
+      const apiKey = import.meta.env.VITE_WEATHERAPI_KEY;
+     
+
+      const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
+     
       try {
         const response = await axios.get(url);
+        console.log('response...', response)
         this.weather = response.data;
+        console.log("data..", data)
       } catch (error) {
-        alert('City not found!');
+        console.error(error);
+        
       }
     },
   },
