@@ -1,6 +1,7 @@
 <template>
-   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100 p-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-4">Vue Weather App</h1>
+   <div class = "flex items-center justify-center min-h-screen bg-blue-100 p-6">
+   <div class="flex flex-col items-center">
+    <h1 class="text-3xl font-bold text-gray-800 text-red-500 mb-4">Vue Weather App</h1>
     <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
       <input
         v-model="city"
@@ -21,6 +22,7 @@
       </div>
     </div>
   </div>
+   </div>
 </template>
 
 <script >
@@ -39,15 +41,13 @@ export default {
     async fetchWeather() {
       if (!this.city) return;
       const apiKey = import.meta.env.VITE_WEATHERAPI_KEY;
-     
-
       const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
      
       try {
         const response = await axios.get(url);
         console.log('response...', response)
         this.weather = response.data;
-        console.log("data..", data)
+        console.log("data..", response.data)
       } catch (error) {
         console.error(error);
         
