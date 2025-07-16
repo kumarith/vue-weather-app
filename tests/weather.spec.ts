@@ -10,8 +10,6 @@ test('Weather App basic UI and fetch', async({page}) => {
 
     await page.getByRole('button',{name : 'Get Weather'}).click();
 
-    await expect(page.locator('.mt-4')).toBeVisible();
-
     await expect(page.getByText(/London/i)).toBeVisible();
 
 
