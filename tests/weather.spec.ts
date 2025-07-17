@@ -12,5 +12,4 @@ test('Weather App basic UI and fetch', async({page}) => {
 
     await expect(page.getByText(/London/i)).toBeVisible();
 
-
 });
