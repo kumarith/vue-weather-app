@@ -14,8 +14,8 @@ test('Weather App basic UI and fetch', async({page}) => {
 });
 
 test('Weather App fetched with mocked API', async({page}) => {
-    await page.route('**/current.json', route => {
-        route.fulfill({
+    await page.route('**/current.json', async route => {
+        await route.fulfill({
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify({
@@ -38,7 +38,7 @@ test('Weather App fetched with mocked API', async({page}) => {
     await page.getByRole('button',{name : 'Get Weather'}).click();
 
     await expect(page.getByText(/London/i)).toBeVisible();
-    await expect(page.getByText(/°C/i)).toBeVisible();
+    await expect(page.getByText('15°C')).toBeVisible();
     await expect(page.getByText(/Partly cloudy/i)).toBeVisible();
 
 })
