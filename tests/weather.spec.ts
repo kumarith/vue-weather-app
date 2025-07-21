@@ -38,7 +38,7 @@ test('Weather App fetched with mocked API', async({page}) => {
     await page.getByRole('button',{name : 'Get Weather'}).click();
 
     await expect(page.getByText(/London/i)).toBeVisible();
-    await expect(page.getByText(/15 °C/i)).toBeVisible();
+    await expect(page.getByText(/15°C/i)).toBeVisible();
     await expect(page.getByText(/Partly cloudy/i)).toBeVisible();
 
 })
@@ -47,7 +47,7 @@ test('Weather App error handling', async({page}) => {
     await page.goto('/');
 
     await page.getByRole('button',{name : 'Get Weather'}).click();
-    
+
     await expect(page.getByText(/Please enter the city name/i)).toBeVisible();
 
     await page.getByPlaceholder('Enter city name').fill('InvalidCityName');
