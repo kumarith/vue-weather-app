@@ -28,6 +28,10 @@
           </ul>
         </div>
 
+        <p v-if="errorMessage" class="text-red-500 mb-2 text-sm">
+           {{ errorMessage }}
+        </p>
+
         <button
           @click="fetchWeather"
           class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
@@ -65,6 +69,7 @@ export default {
         'United Kingdom', 'United States', 'Vietnam'
       ],
       showSuggestions: false,
+      errorMessage: '',
     };
   },
 
@@ -83,6 +88,7 @@ export default {
 
     onInput() {
       this.showSuggestions = true;
+      this.errorMessage = ''; 
     },
 
     selectSuggestion(country) {
@@ -93,8 +99,15 @@ export default {
 
     async fetchWeather() {
       // Check if the city is empty before making the API call
-      if (!this.city) return;
-      this.showSuggestions = false; // Hide suggestions after selection
+      if (!this.city.trim()){
+      this.errorMessage = "Please enter the city name";
+      this.weather = null; // Reset weather data
+      return;
+      }
+      this.errorMessage = ''; 
+      this.showSuggestions = false; 
+
+
       const apiKey = import.meta.env.VITE_WEATHERAPI_KEY;
       const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
      
@@ -104,6 +117,7 @@ export default {
         this.weather = response.data;
         console.log("data..", response.data)
       } catch (error) {
+        this.errorMessage = 'Could not fetch weather data. Please try again.';
         console.error(error);
         
       }
