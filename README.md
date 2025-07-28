@@ -1,29 +1,107 @@
-# weather app
+# 🌤️ Vue Weather App
 
-This template should help get you started developing with Vue 3 in Vite.
+A sleek and responsive weather application built with **Vue 3**, styled using **TailwindCSS**, and tested with **Playwright**. This project also includes a GitHub Actions CI workflow to run end-to-end tests on every push and pull request to the `main` branch.
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Features
 
-## Customize configuration
+- 🔍 Get current weather data using **Axios**
+- ⚡ Fast development with **Vite**
+- 🎨 Beautiful UI powered by **TailwindCSS**
+- ✅ End-to-end testing with **Playwright**
+- 🔁 Continuous integration using **GitHub Actions**
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 🛠️ Tech Stack
 
-```sh
+- [Vue 3](https://vuejs.org/)
+- [Vite](https://vitejs.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Axios](https://axios-http.com/)
+- [Playwright](https://playwright.dev/)
+- [GitHub Actions](https://github.com/features/actions)
+
+---
+
+## 📦 Installation & Local Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/weather.git
+cd weather
+
+# 2. Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# 3. Run the dev server
 npm run dev
-```
 
-### Compile and Minify for Production
-
-```sh
+# 4. Build for production
 npm run build
-```
+
+# 5. Preview production build
+npm run preview
+
+- App will be available at http://localhost:5173 by default.
+
+---
+
+## Playwright E2E
+
+# Install Playwright dependencies and browsers
+npx playwright install --with-deps
+
+# Run tests
+npm run test:e2e
+
+# View tedts report
+npx playwright show-report
+
+---
+
+## GithubActions CI Workflow 
+
+- This project includes a CI pipeline that:
+- Runs on push and pull_request to the main branch
+- Installs Node.js and project dependencies
+- Runs Playwright E2E tests
+- Uploads Playwright test reports
+
+---
+
+## 🔮 Future Plans
+
+The Vue Weather App is a work in progress. Here are some upcoming improvements and features planned:
+
+- Enhanced Input Validation
+  Add stricter validation for search input (e.g., disallow empty or invalid city names).
+
+- Edge Case Error Handling
+  Handle API errors such as invalid responses, rate limits, or network failures more gracefully.
+
+- UI Improvements
+  - Refactor layout to be more mobile responsive.
+  - Improve typography and spacing.
+  - Use skeleton loaders during data fetch.
+
+- Weather Visuals & Animations 
+  - Add icons and illustrations for different weather types (sunny, rainy, cloudy, etc.)
+  - Include small CSS/JS animations for transitions and visual appeal.
+
+- Expand Test Coverage 
+  - Add more Playwright test scenarios.
+  - Validate accessibility and responsiveness.
+
+- Add Logo and Branding
+  - Include an app logo in the navbar/header.
+  - Add a favicon and meta preview image.
+
+- Internationalization (i18n)
+  Support multiple languages and units (e.g., °C vs. °F).
+
+- Deploy to Cloud 
+  Host the app using platforms like **Vercel**, **Netlify**, or **GitHub Pages**.
+
+
