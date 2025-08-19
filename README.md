@@ -29,7 +29,7 @@ A sleek and responsive weather application built with **Vue 3**, styled using **
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/weather.git
+git clone https://github.com/kumarith/vue-weather-app
 cd weather
 
 # 2. Install dependencies
