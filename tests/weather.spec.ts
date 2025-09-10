@@ -54,3 +54,56 @@ test('Weather App error handling', async({page}) => {
     await page.getByRole('button',{name : 'Get Weather'}).click();
     await expect(page.getByText('Could not fetch weather data. Please try again.')).toBeVisible();
 });
+
+test('Weather App accessibility', async({page}) => {
+    await page.goto('/');
+
+    // Check if the input field is focusable
+    const input = page.getByPlaceholder('Enter city name');
+    await input.focus();
+    await expect(input).toBeFocused();
+
+    // Check if the button is focusable
+    const button = page.getByRole('button',{name : 'Get Weather'});
+    await button.focus();
+    await expect(button).toBeFocused();
+
+    // Check for ARIA roles
+    await expect(page.getByRole('heading', { name: 'Vue Weather App' })).toBeVisible();
+});
+
+test('Weather App invalid city handling', async({page}) => {
+    await page.route('**/current.json', async route => {
+        await route.fulfill({
+            status: 400,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                error: {
+                    code: 1006,
+                    message: 'No matching location found.'
+                }
+            })
+        });
+    });
+
+    await page.goto('/');
+    await page.getByPlaceholder('Enter city name').fill('InvalidCityName');
+    await page.getByRole('button',{name : 'Get Weather'}).click();
+
+    await expect(page.getByText('Could not fetch weather data. Please try again.')).toBeVisible();
+});
+
+test('Weather App empty input handling', async({page}) => {
+    await page.goto('/');
+
+    await page.getByRole('button',{name : 'Get Weather'}).click();
+
+    await expect(page.getByText(/Please enter the city name/i)).toBeVisible();
+});
+
+
+
+
+
+
+

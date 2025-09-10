@@ -12,19 +12,25 @@
         <div class="relative w-full mb-4">
           <input v-model="city" @input="onInput" @keydown.down.prevent="highlightNext"
             @keydown.up.prevent="highlightPrev" @keyup.enter="selectOrFetch" placeholder="Enter city name"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            role="combobox" 
+            :aria-expanded="showSuggestions ? 'true' : 'false'" aria-haspopup="listbox" aria-autocomplete="list"
+            aria-owns="suggestions-list"
+            />
 
           <ul v-if="filteredCities.length && showSuggestions"
-            class="absolute top-full left-0 w-full border rounded-md shadow-lg z-10 bg-white max-h-48 overflow-auto">
+            class="absolute top-full left-0 w-full border rounded-md shadow-lg z-10 bg-white max-h-48 overflow-auto"
+            role="listbox" aria-label="City suggestions">
             <li v-for="(c, index) in filteredCities" :key="index" @click="selectSuggestion(c)"
-              :class="['p-2 cursor-pointer', index === highlightedIndex ? 'bg-blue-200' : 'hover:bg-blue-100']">
+              :class="['p-2 cursor-pointer', index === highlightedIndex ? 'bg-blue-200' : 'hover:bg-blue-100']"
+              role="option" :aria-selected="city === c ? 'true' : 'false'">
               {{ c }}
             </li>
           </ul>
         </div>
 
 
-        <p v-if="errorMessage" class="text-red-500 mb-2 text-sm">
+        <p v-if="errorMessage" class="text-red-500 mb-2 text-sm" role="alert">
           {{ errorMessage }}
         </p>
 
@@ -35,7 +41,7 @@
         </button>
 
         <!-- Weather display -->
-        <div v-if="weather" class="mt-6 text-center">
+        <div v-if="weather" class="mt-6 text-center" role="region" aria-live="polite">
           <h2 class="text-2xl font-semibold mb-2">
             {{ weather.location.name }}, {{ weather.location.country }}
           </h2>
