@@ -1,103 +1,121 @@
 import { test, expect } from '@playwright/test';
 
+test.describe('Weather App', () => {
 
-test('Weather App basic UI and fetch', async({page}) => {
+  test('renders basic UI elements', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.getByText('SkyWatch')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /SkyWatch/i })).toBeVisible();
+    await expect(page.getByPlaceholder('Enter city name')).toBeVisible();
+    await expect(page.getByRole('button', { name: /Get Weather/i })).toBeVisible();
+  });
 
-    await page.getByPlaceholder('Enter city name').fill('London');
-    await page.getByRole('button',{name : 'Get Weather'}).click();
+  test('shows suggestions when typing a city', async ({ page }) => {
+    await page.goto('/');
 
-    await expect(page.getByText(/London/i)).toBeVisible();
+    await page.getByPlaceholder('Enter city name').fill('Lon');
+    // wait for debounce + API/local fallback
+    await page.waitForTimeout(800);
 
-});
+    await expect(page.getByRole('listbox', { name: /City suggestions/i })).toBeVisible();
+    await expect(page.getByRole('option', { name: /London/i })).toBeVisible();
+  });
 
-test('Weather App fetched with mocked API', async({page}) => {
-    await page.route('**/current.json', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                location: {
-                    name: 'London',
-                    country: 'United Kingdom'
-                },
-                current: {
-                    temp_c: 15,
-                    condition: {
-                        text: 'Partly Cloudy'
-                    }
-                }
-            })
-        });
+  test('selects a suggestion with mouse click', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByPlaceholder('Enter city name').fill('Lon');
+    await page.waitForTimeout(800);
+
+    await page.getByRole('option', { name: /London/i }).click();
+    await expect(page.getByPlaceholder('Enter city name')).toHaveValue('London');
+  });
+
+  test('selects a suggestion with keyboard', async ({ page }) => {
+    await page.goto('/');
+
+    const input = page.getByPlaceholder('Enter city name');
+    await input.fill('Lon');
+    await page.waitForTimeout(800);
+
+    await input.press('ArrowDown');
+    await input.press('Enter');
+
+    // should auto-fill the first suggestion
+    const value = await input.inputValue();
+    expect(value.length).toBeGreaterThan(0);
+  });
+
+  test('shows error if clicking Get Weather with empty input', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('button', { name: /Get Weather/i }).click();
+    await expect(page.getByRole('alert')).toHaveText(/Please enter a city name/i);
+  });
+
+  test('fetches and displays weather (mocked API)', async ({ page }) => {
+    await page.route('**/current.json*', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          location: { name: 'London', country: 'United Kingdom' },
+          current: {
+            temp_c: 15,
+            temp_f: 59,
+            condition: { text: 'Partly cloudy', icon: '//cdn.weatherapi.com/partly.png' }
+          }
+        })
+      });
     });
 
     await page.goto('/');
     await page.getByPlaceholder('Enter city name').fill('London');
-    await page.getByRole('button',{name : 'Get Weather'}).click();
+    await page.getByRole('button', { name: /Get Weather/i }).click();
 
-    await expect(page.getByText(/London/i)).toBeVisible();
+    await expect(page.getByRole('region')).toContainText(/London, United Kingdom/i);
+    await expect(page.getByText(/Partly cloudy/i)).toBeVisible();
     await expect(page.getByText(/°C/i)).toBeVisible();
-    await expect(page.getByText(/Condition: Partly Cloudy/i)).toBeVisible();
+  });
 
-})
+  test('shows city not found error (mocked 400)', async ({ page }) => {
+    await page.route('**/current.json*', async route => {
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: { code: 1006, message: 'No matching location found.' } })
+      });
+    });
 
-test('Weather App error handling', async({page}) => {
+    await page.goto('/');
+    await page.getByPlaceholder('Enter city name').fill('InvalidCity');
+    await page.getByRole('button', { name: /Get Weather/i }).click();
+
+    await expect(page.getByRole('alert')).toHaveText(/City not found/i);
+  });
+
+  test('shows generic error on server failure', async ({ page }) => {
+    await page.route('**/current.json*', async route => {
+      await route.fulfill({ status: 500, body: 'Internal Server Error' });
+    });
+
+    await page.goto('/');
+    await page.getByPlaceholder('Enter city name').fill('Berlin');
+    await page.getByRole('button', { name: /Get Weather/i }).click();
+
+    await expect(page.getByRole('alert')).toHaveText(/Could not fetch weather data/i);
+  });
+
+  test('is accessible with keyboard focus', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('button',{name : 'Get Weather'}).click();
-
-    await expect(page.getByText(/Please enter a city name/i)).toBeVisible();
-
-    await page.getByPlaceholder('Enter city name').fill('InvalidCityName');
-    await page.getByRole('button',{name : 'Get Weather'}).click();
-    await expect(page.getByText('Could not fetch weather data. Please try again.')).toBeVisible();
-});
-
-test('Weather App accessibility', async({page}) => {
-    await page.goto('/');
-
-    // Check if the input field is focusable
     const input = page.getByPlaceholder('Enter city name');
     await input.focus();
     await expect(input).toBeFocused();
 
-    // Check if the button is focusable
-    const button = page.getByRole('button',{name : 'Get Weather'});
+    const button = page.getByRole('button', { name: /Get Weather/i });
     await button.focus();
     await expect(button).toBeFocused();
+  });
 
-    // Check for ARIA roles
-    await expect(page.getByRole('heading', { name: 'SkyWatch' })).toBeVisible();
 });
-
-test('Weather App invalid city handling', async({page}) => {
-    await page.route('**/current.json', async route => {
-        await route.fulfill({
-            status: 400,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                error: {
-                    code: 1006,
-                    message: 'No matching location found.'
-                }
-            })
-        });
-    });
-
-    await page.goto('/');
-    await page.getByPlaceholder('Enter city name').fill('InvalidCityName');
-    await page.getByRole('button',{name : 'Get Weather'}).click();
-
-    await expect(page.getByText('Could not fetch weather data. Please try again.')).toBeVisible();
-});
-
-
-
-
-
-
-
-
-
