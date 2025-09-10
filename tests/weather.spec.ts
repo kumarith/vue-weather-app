@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 test('Weather App basic UI and fetch', async({page}) => {
     await page.goto('/');
 
-    await expect(page.getByText('Vue Weather App')).toBeVisible();
+    await expect(page.getByText('SkyWatch')).toBeVisible();
 
     await page.getByPlaceholder('Enter city name').fill('London');
     await page.getByRole('button',{name : 'Get Weather'}).click();
@@ -69,7 +69,7 @@ test('Weather App accessibility', async({page}) => {
     await expect(button).toBeFocused();
 
     // Check for ARIA roles
-    await expect(page.getByRole('heading', { name: 'Vue Weather App' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'SkyWatch' })).toBeVisible();
 });
 
 test('Weather App invalid city handling', async({page}) => {
