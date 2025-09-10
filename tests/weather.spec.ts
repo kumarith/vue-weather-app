@@ -26,7 +26,7 @@ test('Weather App fetched with mocked API', async({page}) => {
                 current: {
                     temp_c: 15,
                     condition: {
-                        text: 'Partly cloudy'
+                        text: 'Partly Cloudy'
                     }
                 }
             })
@@ -39,7 +39,7 @@ test('Weather App fetched with mocked API', async({page}) => {
 
     await expect(page.getByText(/London/i)).toBeVisible();
     await expect(page.getByText(/°C/i)).toBeVisible();
-    await expect(page.getByText(/Partly cloudy/i)).toBeVisible();
+    await expect(page.getByText(/Condition: Partly Cloudy/i)).toBeVisible();
 
 })
 
@@ -48,7 +48,7 @@ test('Weather App error handling', async({page}) => {
 
     await page.getByRole('button',{name : 'Get Weather'}).click();
 
-    await expect(page.getByText(/Please enter the city name/i)).toBeVisible();
+    await expect(page.getByText(/Please enter a city name/i)).toBeVisible();
 
     await page.getByPlaceholder('Enter city name').fill('InvalidCityName');
     await page.getByRole('button',{name : 'Get Weather'}).click();
