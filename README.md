@@ -71,18 +71,6 @@ npx playwright show-report
 
 ---
 
-## 🔮 Future Plans
-
-The Vue Weather App is a work in progress. Here are some upcoming improvements and features planned:
-
-
-- Edge Case Error Handling
-  Handle API errors such as invalid responses, rate limits, or network failures more gracefully.
-
-- Expand Test Coverage 
-  - Add more Playwright test scenarios.
-  - Validate accessibility and responsiveness.
-
 - Internationalization (i18n)
   Support multiple languages and units (e.g., °C vs. °F).
 

@@ -13,10 +13,8 @@
           <input v-model="city" @input="onInput" @keydown.down.prevent="highlightNext"
             @keydown.up.prevent="highlightPrev" @keyup.enter="selectOrFetch" placeholder="Enter city name"
             class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            role="combobox" 
-            :aria-expanded="showSuggestions ? 'true' : 'false'" aria-haspopup="listbox" aria-autocomplete="list"
-            aria-owns="suggestions-list"
-            />
+            role="combobox" :aria-expanded="showSuggestions ? 'true' : 'false'" aria-haspopup="listbox"
+            aria-autocomplete="list" aria-owns="suggestions-list" />
 
           <ul v-if="filteredCities.length && showSuggestions"
             class="absolute top-full left-0 w-full border rounded-md shadow-lg z-10 bg-white max-h-48 overflow-auto"
@@ -52,7 +50,8 @@
           </div>
 
           <p class="text-5xl font-bold text-blue-700">
-            {{ Math.round(weather.current.temp_c) }}°C
+            {{ Math.round(weather.current.temp_c) }}°C |
+            {{ Math.round(weather.current.temp_f) }}°F
           </p>
         </div>
       </div>
