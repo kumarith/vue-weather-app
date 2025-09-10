@@ -14,6 +14,28 @@ A sleek and responsive weather application built with **Vue 3**, styled using **
 
 ---
 
+## ♿ Accessibility
+
+This project has been built with accessibility in mind. Some of the key accessibility features include:
+
+- 🎛 **ARIA roles and attributes**
+  - `role="combobox"` on the search input for screen readers
+  - `aria-expanded`, `aria-autocomplete`, and `aria-controls` to describe input state
+  - `role="listbox"` and `role="option"` for city suggestions
+  - `role="alert"` for error messages so they are announced immediately
+  - `role="region"` and `aria-live="polite"` for weather results to announce updates
+
+- ⌨️ **Keyboard support**
+  - Users can navigate suggestions with the keyboard and press **Enter** to select
+  - Pressing **Enter** on the input fetches weather for the selected city
+
+- 🎨 **Color contrast**
+  - Ensured sufficient contrast between text and background for readability
+
+These improvements make the app usable with screen readers and keyboard navigation, ensuring a more inclusive experience.
+
+---
+
 ## 🛠️ Tech Stack
 
 - [Vue 3](https://vuejs.org/)
@@ -70,9 +92,6 @@ npx playwright show-report
 - Uploads Playwright test reports
 
 ---
-
-- Internationalization (i18n)
-  Support multiple languages and units (e.g., °C vs. °F).
 
 - Deploy to Cloud 
   Host the app using platforms like **Vercel**, **Netlify**, or **GitHub Pages**.
