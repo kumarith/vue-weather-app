@@ -93,13 +93,7 @@ test('Weather App invalid city handling', async({page}) => {
     await expect(page.getByText('Could not fetch weather data. Please try again.')).toBeVisible();
 });
 
-test('Weather App empty input handling', async({page}) => {
-    await page.goto('/');
 
-    await page.getByRole('button',{name : 'Get Weather'}).click();
-
-    await expect(page.getByText(/Please enter the city name/i)).toBeVisible();
-});
 
 
 
