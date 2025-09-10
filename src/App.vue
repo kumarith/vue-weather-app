@@ -1,50 +1,36 @@
 <template>
-  <div :class="backgroundClass" class="flex items-center justify-center min-h-screen p-4 transition-colors duration-500">
+  <div :class="backgroundClass"
+    class="flex items-center justify-center min-h-screen p-4 transition-colors duration-500">
     <div class="flex flex-col items-center w-full">
-      
-      <!-- Dynamic Heading -->
+
       <h1 :class="headingColor" class="text-4xl font-extrabold mb-6 text-center transition-colors duration-500">
         {{ weatherEmoji }} SkyWatch
       </h1>
 
       <div class="w-full max-w-md bg-white p-6 rounded-xl shadow-lg">
-        
-        <!-- Input field -->
+
         <div class="relative w-full mb-4">
-          <input
-            v-model="city"
-            @input="onInput"
-            @keyup.enter="fetchWeather"
-            placeholder="Enter city name"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          
-          <!-- Suggestions dropdown -->
-          <ul
-            v-if="filteredCities.length && showSuggestions"
-            class="absolute top-full left-0 w-full border rounded-md shadow-lg z-10 bg-white max-h-48 overflow-auto"
-          >
-            <li
-              v-for="(c, index) in filteredCities"
-              :key="index"
-              @click="selectSuggestion(c)"
-              class="p-2 hover:bg-blue-100 cursor-pointer"
-            >
+          <input v-model="city" @input="onInput" @keydown.down.prevent="highlightNext"
+            @keydown.up.prevent="highlightPrev" @keyup.enter="selectOrFetch" placeholder="Enter city name"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+          <ul v-if="filteredCities.length && showSuggestions"
+            class="absolute top-full left-0 w-full border rounded-md shadow-lg z-10 bg-white max-h-48 overflow-auto">
+            <li v-for="(c, index) in filteredCities" :key="index" @click="selectSuggestion(c)"
+              :class="['p-2 cursor-pointer', index === highlightedIndex ? 'bg-blue-200' : 'hover:bg-blue-100']">
               {{ c }}
             </li>
           </ul>
         </div>
 
-        <!-- Error message -->
+
         <p v-if="errorMessage" class="text-red-500 mb-2 text-sm">
           {{ errorMessage }}
         </p>
 
-        <!-- Fetch button -->
-        <button
-          @click="fetchWeather"
-          class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors"
-        >
+
+        <button @click="fetchWeather"
+          class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors">
           Get Weather
         </button>
 
@@ -53,16 +39,12 @@
           <h2 class="text-2xl font-semibold mb-2">
             {{ weather.location.name }}, {{ weather.location.country }}
           </h2>
-          
+
           <div class="flex items-center justify-center mb-2 space-x-2">
-            <img
-              :src="weather.current.condition.icon"
-              :alt="weather.current.condition.text"
-              class="w-12 h-12"
-            />
+            <img :src="weather.current.condition.icon" :alt="weather.current.condition.text" class="w-12 h-12" />
             <p class="text-xl font-medium">{{ weather.current.condition.text }}</p>
           </div>
-          
+
           <p class="text-5xl font-bold text-blue-700">
             {{ Math.round(weather.current.temp_c) }}°C
           </p>
@@ -74,61 +56,107 @@
 
 <script>
 import axios from 'axios';
+import localCities from './data/cities.json'; // fallback local city list
 
 export default {
   data() {
     return {
       city: '',
       filteredCities: [],
-      debounceTimer: null,
       weather: null,
       showSuggestions: false,
       errorMessage: '',
       weatherEmoji: '☀️',
       headingColor: 'text-yellow-500',
-      backgroundClass: 'bg-gradient-to-b from-blue-200 via-blue-100 to-white'
+      backgroundClass: 'bg-gradient-to-b from-blue-200 via-blue-100 to-white',
+      highlightedIndex: -1,
+      debounceTimer: null,
+      cityCache: {} // cache for API results
     };
   },
   methods: {
-     onInput() {
+    onInput() {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = setTimeout(() => {
-      this.fetchCities()
-    }, 400);
+        this.fetchCities();
+      }, 700); // 700ms debounce to avoid 429
     },
 
     async fetchCities() {
-      if (!this.city.trim()) {
+      const prefix = this.city.trim().toLowerCase();
+      if (!prefix) {
         this.filteredCities = [];
         return;
       }
 
+      // Use cached results if available
+      if (this.cityCache[prefix]) {
+        this.filteredCities = this.cityCache[prefix];
+        this.showSuggestions = true;
+        return;
+      }
+
       try {
-        // Fetch cities from GeoDB API
+        // API call to GeoDB Cities
         const response = await axios.get('https://wft-geo-db.p.rapidapi.com/v1/geo/cities', {
-          params: { namePrefix: this.city, limit: 5 },
+          params: { namePrefix: prefix, limit: 5 },
           headers: {
-            'X-RapidAPI-Key': '<YOUR_RAPIDAPI_KEY>',
+            'X-RapidAPI-Key': import.meta.env.VITE_RAPIDAPI_KEY,
             'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
           }
         });
 
-        this.filteredCities = response.data.data.map(city => city.city);
+        const cities = response.data.data.map(city => city.city);
+
+        if (cities.length === 0) {
+          // fallback to local cities if API returns nothing
+          const fallback = localCities.filter(c => c.toLowerCase().startsWith(prefix)).slice(0, 5);
+          this.filteredCities = fallback;
+        } else {
+          this.filteredCities = cities;
+          this.cityCache[prefix] = cities; // cache results
+        }
+
         this.showSuggestions = true;
 
       } catch (err) {
         console.error('Error fetching cities:', err);
-        this.filteredCities = [];
+        // fallback to local cities on API error
+        this.filteredCities = localCities.filter(c => c.toLowerCase().startsWith(prefix)).slice(0, 5);
+        this.showSuggestions = true;
       }
+    },
+
+    highlightNext() {
+      if (!this.filteredCities.length) return;
+      this.highlightedIndex = (this.highlightedIndex + 1) % this.filteredCities.length;
+    },
+
+    highlightPrev() {
+      if (!this.filteredCities.length) return;
+      this.highlightedIndex = (this.highlightedIndex - 1 + this.filteredCities.length) % this.filteredCities.length;
+    },
+
+    selectOrFetch() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.filteredCities.length) {
+        this.selectSuggestion(this.filteredCities[this.highlightedIndex]);
+      }
+      this.fetchWeather();
+      this.highlightedIndex = -1;
     },
 
     selectSuggestion(cityName) {
       this.city = cityName;
       this.showSuggestions = false;
       this.filteredCities = [];
+      this.highlightedIndex = -1;
     },
 
     async fetchWeather() {
+      if (!this.city.trim() && this.filteredCities.length) {
+        this.city = this.filteredCities[0];
+      }
+
       if (!this.city.trim()) {
         this.errorMessage = "Please enter a city name";
         this.weather = null;
@@ -147,11 +175,15 @@ export default {
         this.city = '';
         this.updateWeatherVisuals();
       } catch (error) {
-        this.errorMessage = 'Could not fetch weather data. Please try again.';
-        console.error(error);
+        if (error.response && error.response.status === 400) {
+          this.errorMessage = "City not found. Please check the spelling.";
+        } else {
+          this.errorMessage = "Could not fetch weather data. Please try again.";
+        }
       }
     },
-     updateWeatherVisuals() {
+
+    updateWeatherVisuals() {
       if (!this.weather) return;
       const condition = this.weather.current.condition.text.toLowerCase();
 
