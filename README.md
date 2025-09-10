@@ -75,28 +75,13 @@ npx playwright show-report
 
 The Vue Weather App is a work in progress. Here are some upcoming improvements and features planned:
 
-- Enhanced Input Validation
-  Add stricter validation for search input (e.g., disallow empty or invalid city names).
 
 - Edge Case Error Handling
   Handle API errors such as invalid responses, rate limits, or network failures more gracefully.
 
-- UI Improvements
-  - Refactor layout to be more mobile responsive.
-  - Improve typography and spacing.
-  - Use skeleton loaders during data fetch.
-
-- Weather Visuals & Animations 
-  - Add icons and illustrations for different weather types (sunny, rainy, cloudy, etc.)
-  - Include small CSS/JS animations for transitions and visual appeal.
-
 - Expand Test Coverage 
   - Add more Playwright test scenarios.
   - Validate accessibility and responsiveness.
-
-- Add Logo and Branding
-  - Include an app logo in the navbar/header.
-  - Add a favicon and meta preview image.
 
 - Internationalization (i18n)
   Support multiple languages and units (e.g., °C vs. °F).
