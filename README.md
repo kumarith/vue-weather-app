@@ -1,6 +1,6 @@
 # 🌤️ Vue Weather App
 
-A sleek and responsive weather application built with **Vue 3**, styled using **TailwindCSS**, and tested with **Playwright**. This project also includes a GitHub Actions CI workflow to run end-to-end tests on every push and pull request to the `main` branch.
+A sleek and responsive weather application built with **Vue 3**, styled using **TailwindCSS**, and tested with **Playwright**.It has dynamic changes for icons and background color according to weather showing both in Centigrade(°C) and Fahrenheit(°F)  This project also includes a GitHub Actions CI workflow to run end-to-end tests on every push and pull request to the `main` branch.
 
 ---
 
@@ -44,6 +44,23 @@ These improvements make the app usable with screen readers and keyboard navigati
 - [Axios](https://axios-http.com/)
 - [Playwright](https://playwright.dev/)
 - [GitHub Actions](https://github.com/features/actions)
+
+---
+
+# 🌦️ Vue Weather App
+
+A simple weather application built with Vue.
+
+## 📸 Screenshots
+
+### Home Page
+![Home Page](./public/screenshots/home.png)
+
+### Search Suggestions
+![Search Suggestions](./public/screenshots/search.png)
+
+### Forecast View
+![Forecast View](./public/screenshots/forecast.png)
 
 ---
 
@@ -91,9 +108,5 @@ npx playwright show-report
 - Runs Playwright E2E tests
 - Uploads Playwright test reports
 
----
-
-- Deploy to Cloud 
-  Host the app using platforms like **Vercel**, **Netlify**, or **GitHub Pages**.
 
 
