@@ -64,6 +64,13 @@ A simple weather application built with Vue.
 
 ---
 
+## 🔗 Live Links
+
+- 🚀 **Storybook (Live Preview on Netlify)**: [https://vueweatherapp-mu.vercel.app/](https://vueweatherapp-mu.vercel.app/)
+- 💻 **GitHub Repository**: [https://github.com/kumarith/vue-weather-app](https://github.com/kumarith/vue-weather-app)
+
+---
+
 ## 📦 Installation & Local Setup
 
 ```bash
