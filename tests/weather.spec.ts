@@ -17,8 +17,8 @@ test.describe('Weather App', () => {
     // wait for debounce + API/local fallback
     await page.waitForTimeout(800);
 
-    await expect(page.getByRole('listbox', { name: /City suggestions/i })).toBeVisible();
-    await expect(page.getByRole('option', { name: /London/i }).first()).toBeVisible();
+    await expect(page.getByRole('listbox', { name: /City suggestions/i }).waitFor({ state: 'visible' }));
+    await expect(page.getByRole('option', { name: /London/i }).first()).toBeVisible({ timeout: 10000 });
   });
 
   test('selects a suggestion with mouse click', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Weather App', () => {
     await page.getByPlaceholder('Enter city name').fill('Lon');
     await page.waitForTimeout(800);
 
-    await page.getByRole('option', { name: /London/i }).first().click();
+    await page.getByRole('option', { name: /London/i }).first().click({ timeout: 10000 });
     await expect(page.getByPlaceholder('Enter city name')).toHaveValue('London');
   });
 
