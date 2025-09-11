@@ -172,7 +172,7 @@ export default {
       this.showSuggestions = false;
 
       const apiKey = import.meta.env.VITE_WEATHERAPI_KEY;
-      const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${this.city}`;
 
       try {
         const response = await axios.get(url);

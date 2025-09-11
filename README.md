@@ -1,6 +1,6 @@
 # 🌤️ Vue Weather App
 
-A sleek and responsive weather application built with **Vue 3**, styled using **TailwindCSS**, and tested with **Playwright**.It has dynamic changes for icons and background color according to weather showing both in Centigrade(°C) and Fahrenheit(°F)  This project also includes a GitHub Actions CI workflow to run end-to-end tests on every push and pull request to the `main` branch.
+A sleek and responsive weather application built with **Vue 3**, styled using **TailwindCSS**, and tested with **Playwright**.It has dynamic changes for icons and background color according to weather showing both in Centigrade(°C) and Fahrenheit(°F)  This project also includes a GitHub Actions CI/CD workflow to run end-to-end tests on every push and pull request to the `main` branch.
 
 ---
 
