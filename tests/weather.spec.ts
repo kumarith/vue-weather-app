@@ -11,25 +11,26 @@ test.describe('Weather App', () => {
   });
 
   test('shows suggestions when typing a city', async ({ page }) => {
-    await page.goto('/');
+  await page.getByPlaceholder('Enter city name').fill('Lon');
 
-    await page.getByPlaceholder('Enter city name').fill('Lon');
-    // wait for debounce + API/local fallback
-    await page.waitForTimeout(800);
+  // Wait for listbox to appear
+  await page.getByRole('listbox', { name: /City suggestions/i }).waitFor({ state: 'visible', timeout: 10000 });
 
-    await expect(page.getByRole('listbox', { name: /City suggestions/i }).waitFor({ state: 'visible' }));
-    await expect(page.getByRole('option', { name: /London/i }).first()).toBeVisible({ timeout: 10000 });
-  });
+  // Then check for option visibility
+  await expect(page.getByRole('option', { name: /London/i }).first()).toBeVisible({ timeout: 10000 });
+});
 
   test('selects a suggestion with mouse click', async ({ page }) => {
-    await page.goto('/');
+  await page.getByPlaceholder('Enter city name').fill('Lon');
 
-    await page.getByPlaceholder('Enter city name').fill('Lon');
-    await page.waitForTimeout(800);
+  // Wait for option to appear
+  const londonOption = page.getByRole('option', { name: /London/i }).first();
+  await londonOption.waitFor({ state: 'visible', timeout: 10000 });
 
-    await page.getByRole('option', { name: /London/i }).first().click({ timeout: 10000 });
-    await expect(page.getByPlaceholder('Enter city name')).toHaveValue('London');
-  });
+  // Click it
+  await londonOption.click();
+  await expect(page.getByPlaceholder('Enter city name')).toHaveValue('London');
+});
 
   test('selects a suggestion with keyboard', async ({ page }) => {
     await page.goto('/');
