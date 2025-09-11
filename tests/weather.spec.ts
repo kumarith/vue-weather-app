@@ -18,7 +18,7 @@ test.describe('Weather App', () => {
     await page.waitForTimeout(800);
 
     await expect(page.getByRole('listbox', { name: /City suggestions/i })).toBeVisible();
-    await expect(page.getByRole('option', { name: /London/i })).toBeVisible();
+    await expect(page.getByRole('option', { name: /London/i }).first()).toBeVisible();
   });
 
   test('selects a suggestion with mouse click', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Weather App', () => {
     await page.getByPlaceholder('Enter city name').fill('Lon');
     await page.waitForTimeout(800);
 
-    await page.getByRole('option', { name: /London/i }).click();
+    await page.getByRole('option', { name: /London/i }).first().click();
     await expect(page.getByPlaceholder('Enter city name')).toHaveValue('London');
   });
 
